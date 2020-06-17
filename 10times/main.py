@@ -31,8 +31,16 @@ for url in links.get_content():
                  soup.find_all('div', class_='row11')]
     info = [rawtables[0][i].get_text().split(" ", 1) for i in range(len(rawtables[0]))]
     infodata = [i[1].strip('\n').strip() for i in info[:4]]
-    time = [" ".join(i[:2]) for i in [i.split() for i in infodata[0].split('-')]]  # time
-    participants = (re.findall(r"[0-9]+\s-\s[0-9]+ | [0-9]+", infodata[2]))[0].strip()
+    time = [" ".join(i[:2]) for i in [i.split() for i in infodata[0].split('-')]]  
+
+    try:
+        participants = (re.findall(r"[0-9]+\s-\s[0-9]+|[0-9]+", infodata[2]))[0].strip()
+    except IndexError:
+        try:
+            participants = re.findall(r"[0-9]+\+")
+        except IndexError:
+            participants = 0
+
     tags = (', '.join(infodata[3].replace('Type', '').replace('&', '').split()))
 
     # attendees data
